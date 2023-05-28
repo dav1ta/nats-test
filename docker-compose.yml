@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  setup:
+    build: ./setup
+    depends_on:
+      - nats
+  nats:
+    image: nats:latest
+    command: ["-js"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+      - "6222:6222"
+  publisher:
+    build: ./publisher
+    depends_on:
+      - nats
+  subscriber:
+    build: ./subscriber
+    depends_on:
+      - nats
