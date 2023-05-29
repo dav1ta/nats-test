@@ -18,16 +18,13 @@ func main() {
         log.Fatalf("Error accessing JetStream: %v", err)
     }
 
-    // Create a JetStream subscription
     _, err = js.Subscribe("ORDERS.order1", func(m *nats.Msg) {
-        // Process each message
         log.Printf("Received a message: %s\n", string(m.Data))
     }, nats.Durable("my-durable"))
     if err != nil {
         log.Fatalf("Error subscribing to ORDERS.order1: %v", err)
     }
 
-    // Keep the connection alive until the program is terminated
     select {}
 }
 

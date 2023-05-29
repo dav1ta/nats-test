@@ -40,7 +40,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Call the CreateStream function to create the stream
 	err = CreateStream(js)
 	if err != nil {
 		log.Fatal(err)

@@ -12,7 +12,6 @@ func main() {
     nc, _ := nats.Connect("nats://nats:4222")
     js, _ := nc.JetStream()
 
-    // Publish messages to "ORDERS.*" stream
     for i := 0; i < 10; i++ {
         msg := fmt.Sprintf("Order %d", i)
       log.Printf("Publishing message: %s to stream 'ORDERS.order1'\n", msg)
