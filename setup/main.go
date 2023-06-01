@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	StreamName     = "ORDERS"
-	StreamSubjects = "ORDERS.*"
+	StreamName     = "SYSLOGS"
+	StreamSubjects = "SYSLOGS.*"
 )
 
 func CreateStream(jetStream nats.JetStreamContext) error {
@@ -45,6 +45,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Stream 'ORDERS' created successfully")
+//use StreamName and StreamSubjects to create log
+log.Println("Stream: ",StreamName,"created")
+  
+
 }
 

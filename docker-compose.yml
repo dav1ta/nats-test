@@ -15,7 +15,9 @@ services:
     build: ./publisher
     depends_on:
       - nats
+      - setup
   subscriber:
     build: ./subscriber
     depends_on:
       - nats
+      - setup
