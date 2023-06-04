@@ -43,15 +43,23 @@ func main() {
     nc, _ := nats.Connect("nats://nats:4222")
     js, _ := nc.JetStream()
 
-    for i := 0; i < 10; i++ {
+  for i := 0; i < 1; i++ {
+    a:=0
+
+    for i := 0; i < 500000; i++ {
+        a++
         msg := GenerateNewSyslog()
-        log.Printf("Publishing message: %s to stream 'SYSLOGS'\n", msg)
+        // log.Printf("Publishing message: %s to stream 'SYSLOGS'\n", msg)
+      log.Println(a)
+
         _, err := js.Publish("SYSLOGS.sources", []byte(msg))
-        time.Sleep(1 * time.Second)
         if err != nil {
             log.Fatal(err)
         }
     }
+    time.Sleep(1 * time.Second)
+
+  }
 
     nc.Drain()
 }

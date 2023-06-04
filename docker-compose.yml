@@ -11,13 +11,20 @@ services:
       - "4222:4222"
       - "8222:8222"
       - "6222:6222"
+      
   publisher:
     build: ./publisher
     depends_on:
       - nats
       - setup
+    volumes:
+      - ./publisher:/app
+      
   subscriber:
     build: ./subscriber
     depends_on:
       - nats
       - setup
+    volumes:
+      - ./subscriber/:/app
+      
