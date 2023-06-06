@@ -4,6 +4,9 @@ import (
     "fmt"
     "log"
     "math/rand"
+    "os"
+    "os/signal"
+    "syscall"
     "time"
 
     "github.com/nats-io/nats.go"
@@ -11,7 +14,6 @@ import (
 
 const (
     Letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    Digits  = "0123456789"
 )
 
 func RandStringBytes(n int, charset string) string {
@@ -40,27 +42,42 @@ func GenerateNewSyslog() string {
 func main() {
     rand.Seed(time.Now().UnixNano())
 
-    nc, _ := nats.Connect("nats://nats:4222")
-    js, _ := nc.JetStream()
-
-  for i := 0; i < 1; i++ {
-    a:=0
-
-    for i := 0; i < 500000; i++ {
-        a++
-        msg := GenerateNewSyslog()
-        // log.Printf("Publishing message: %s to stream 'SYSLOGS'\n", msg)
-      log.Println(a)
-
-        _, err := js.Publish("SYSLOGS.sources", []byte(msg))
-        if err != nil {
-            log.Fatal(err)
-        }
+    // Connect to NATS
+    nc, err := nats.Connect("nats://nats:4222")
+    if err != nil {
+        log.Fatal(err)
     }
-    time.Sleep(1 * time.Second)
 
-  }
+    // Access JetStream
+    js, err := nc.JetStream()
+    if err != nil {
+        log.Fatal(err)
+    }
 
+    // Create a quit channel
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+    // start a go routine to generate syslog messages and publish them to NATS
+    go func() {
+        for {
+            select {
+            case <-quit:
+                return
+            default:
+                msg := GenerateNewSyslog()
+                _, err := js.Publish("SYSLOGS.sources", []byte(msg))
+                if err != nil {
+                    log.Fatal(err)
+                }
+            }
+        }
+    }()
+
+    // Wait for the interrupt signal
+    <-quit
+
+    // Drain the connection (waits for pending messages to be published)
     nc.Drain()
 }
 

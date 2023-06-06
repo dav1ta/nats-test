@@ -18,8 +18,9 @@ func CreateStream(jetStream nats.JetStreamContext) error {
 		log.Printf("Creating stream: %s\n", StreamName)
 
 		_, err = jetStream.AddStream(&nats.StreamConfig{
-			Name:     StreamName,
-			Subjects: []string{StreamSubjects},
+			Name:        StreamName,
+			Subjects:    []string{StreamSubjects},
+			Storage:     nats.MemoryStorage, // Using memory storage for speed optimization
 		})
 		if err != nil {
 			return err
@@ -45,9 +46,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-//use StreamName and StreamSubjects to create log
-log.Println("Stream: ",StreamName,"created")
-  
-
+	log.Println("Stream: ",StreamName,"created")
 }
 
