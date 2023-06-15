@@ -20,21 +20,6 @@ services:
     volumes:
       - ./publisher:/app
       
-  publisher2:
-    build: ./publisher
-    depends_on:
-      - nats
-      - setup
-    volumes:
-      - ./publisher:/app
-  publisher3:
-    build: ./publisher
-    depends_on:
-      - nats
-      - setup
-    volumes:
-      - ./publisher:/app
-
 
   subscriber:
     build: ./subscriber
